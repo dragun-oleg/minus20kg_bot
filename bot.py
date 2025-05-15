@@ -5,7 +5,7 @@ from aiohttp import web
 from aiogram import Bot, Dispatcher, types
 from aiogram.utils import executor
 
-API_TOKEN = os.getenv('API_TOKEN', 'YOUR_BOT_TOKEN')
+API_TOKEN = os.getenv('API_TOKEN', '8021205759:AAExIRfrveeTZT5gxEXsRMy7tNaTVT7Fsdk')
 
 logging.basicConfig(level=logging.INFO)
 
