@@ -1,10 +1,14 @@
-from aiogram import Bot, Dispatcher, types, executor
-import logging
 import os
+import logging
+import asyncio
+from aiohttp import web
+from aiogram import Bot, Dispatcher, types
+from aiogram.utils import executor
 
-API_TOKEN = os.getenv('API_TOKEN')
+API_TOKEN = os.getenv('API_TOKEN', 'YOUR_BOT_TOKEN')
 
 logging.basicConfig(level=logging.INFO)
+
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
 
@@ -41,5 +45,17 @@ async def send_task(message: types.Message):
 async def send_help(message: types.Message):
     await message.reply("Команды:\n/start — начать сначала\n/next — следующее задание\n/help — помощь")
 
+# Запускаем aiohttp-сервер с эндпоинтом /ping
+async def handle_ping(request):
+    return web.Response(text="pong")
+
+def start_web_server():
+    app = web.Application()
+    app.router.add_get("/ping", handle_ping)
+    port = int(os.environ.get("PORT", 8080))
+    web.run_app(app, port=port)
+
 if __name__ == '__main__':
-    executor.start_polling(dp, skip_updates=True)
+    loop = asyncio.get_event_loop()
+    loop.create_task(dp.start_polling())
+    start_web_server()
